@@ -5,5 +5,5 @@ using UnityEngine;
 
 public class GameManager : DestoryableSingleton<GameManager>
 {
-    public GameObject RemainPos;
+    public Transform RemainIngredientPos;
 }

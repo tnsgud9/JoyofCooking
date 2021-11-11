@@ -1,0 +1,51 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5bf7c34a0dc4e6348bea04faa70406ee, type: 3}
+  m_Name: BlockAssets
+  m_EditorClassIdentifier: 
+  m_Labels:
+  - m_Name: lettuce
+    m_Hash: 1082003914
+    m_CategoryList:
+    - m_Name: left
+      m_Hash: 2053629800
+      m_Sprite: {fileID: 21300000, guid: e762873fa3f34fd4bbb6925adca54ac8, type: 3}
+    - m_Name: right
+      m_Hash: -1261800172
+      m_Sprite: {fileID: 21300000, guid: fb986aa8af492de43a85161d117b2f58, type: 3}
+  - m_Name: pimento
+    m_Hash: -407715045
+    m_CategoryList:
+    - m_Name: left
+      m_Hash: 2053629800
+      m_Sprite: {fileID: 21300000, guid: 31167c1fcd8e8334ca15f866f5e0d488, type: 3}
+    - m_Name: right
+      m_Hash: -1261800172
+      m_Sprite: {fileID: 21300000, guid: 1d38804436f80d34d8c10805b6c0a6ae, type: 3}
+  - m_Name: tofu
+    m_Hash: -1789252264
+    m_CategoryList:
+    - m_Name: left
+      m_Hash: 2053629800
+      m_Sprite: {fileID: 21300000, guid: f2043890b6257634bb3022ae2242d2ab, type: 3}
+    - m_Name: right
+      m_Hash: -1261800172
+      m_Sprite: {fileID: 21300000, guid: 3f2358e1bbe648c48ac90522d391699f, type: 3}
+  - m_Name: carrot
+    m_Hash: -1195469618
+    m_CategoryList:
+    - m_Name: left
+      m_Hash: 2053629800
+      m_Sprite: {fileID: 21300000, guid: 5dd1249261823dc4e947d632885170d7, type: 3}
+    - m_Name: right
+      m_Hash: -1261800172
+      m_Sprite: {fileID: 21300000, guid: 6b6a3f9891aba794cb5e08c91fd4a507, type: 3}

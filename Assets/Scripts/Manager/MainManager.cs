@@ -8,7 +8,11 @@ using UnityEngine.Serialization;
 
 public class MainManager : Singleton<MainManager>, Manager
 {
+    [Header("Resources Setting")]
     public SpriteLibraryAsset blockBundle;
+    
+    [Header("Components Settings")]
+    public CameraController CameraController;
 
     private void Awake()
     {

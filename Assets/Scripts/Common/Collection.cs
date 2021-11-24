@@ -10,5 +10,9 @@ public class Collection {
         Array values = Enum.GetValues(typeof(T)); 
         return (T) values.GetValue(new Random().Next(0, values.Length)); 
     }
-    
+    private static IEnumerator WaitThenCallback(float time, Action callback)
+    {
+        yield return new WaitForSeconds(time);
+        callback();
+    }
 }

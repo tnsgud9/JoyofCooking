@@ -11,7 +11,7 @@ public class CameraController : Singleton<CameraController>
 
     private void Awake()
     {
-        MainManager.Instance.CameraController = this;
+        SuperManager.Instance.cameraController = this;
         _camera = GetComponent<Camera>();
 
     }
@@ -33,7 +33,7 @@ public class CameraController : Singleton<CameraController>
             if (  hit.collider.gameObject.CompareTag("Block"))
             {
                 Debug.Log("is Block hit");
-                hit.collider.gameObject.GetComponent<Block>().SelectBlock();
+                //PuzzleManager.Instance.SelectBlock(hit.collider.gameObject.GetComponent<Block>());
             }
             
         }

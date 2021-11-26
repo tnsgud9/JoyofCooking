@@ -7,8 +7,8 @@ using UnityEngine;
 
 public class GameManager : DestoryableSingleton<GameManager>
 {
-    public TilesController tilesController;
-    public BlocksController blocksController;
+    public TilesManager tilesManager;
+    public BlocksManager blocksController;
     private void Awake()
     {
     }

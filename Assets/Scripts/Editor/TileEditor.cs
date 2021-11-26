@@ -5,7 +5,7 @@ using UnityEditor;
 using UnityEngine;
 
 [CanEditMultipleObjects]
-[CustomEditor(typeof(TilesController))]
+[CustomEditor(typeof(TilesManager))]
 public class TileEditor : Editor
 {
     /*

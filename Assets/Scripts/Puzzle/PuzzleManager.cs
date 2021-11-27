@@ -16,8 +16,11 @@ public class PuzzleManager : DestoryableSingleton<PuzzleManager>,Manager
     public GameObject blockPrefab;
     public List<GameObject> blocks;
     public Queue<GameObject> disableBlocks;
-    
 
+    private void Update()
+    {
+        Debug.Log(disableBlocks.Count);
+    }
 
     private void Awake()
     {
@@ -95,7 +98,7 @@ public class PuzzleManager : DestoryableSingleton<PuzzleManager>,Manager
         {
             for (int j = 0; j < Constants.TILESIZE; j++)
             {
-                tileMap[i, j].SetBlock(disableBlocks.Dequeue());
+                tileMap[i, j].SetBlock(disableBlocks.Dequeue(),i,j);
                 tileMap[i, j].block.ChangeRandomType();
             }
         }
@@ -151,6 +154,24 @@ public class PuzzleManager : DestoryableSingleton<PuzzleManager>,Manager
         return matches;
     }
 
+    #endregion
+
+    #region Camera Events
+
+    public void SelectBlock(GameObject target)
+    {
+        List<Block> matchBlocks = PuzzleMatchingBFS(target.GetComponent<Block>());
+        if (matchBlocks.Count >= Constants.MATCHCOUNT)
+        {
+            foreach (Block block in matchBlocks)
+            {
+               block.CutHandler();
+               disableBlocks.Enqueue(block.gameObject);
+               
+            }
+            //재배치 관련 함수
+        }
+    }
     #endregion
     
 }

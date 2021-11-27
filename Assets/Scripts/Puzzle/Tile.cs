@@ -14,10 +14,13 @@ public class Tile
         transform = tile.transform;
     }
 
-    public void SetBlock(GameObject block)
+    public void SetBlock(GameObject block,int y,int x)
     {
         this.block = block.GetComponent<Block>();
+        this.block.X = x;
+        this.block.Y = y;
         block.transform.position = transform.position;
+        
         block.SetActive(true);
     }
 }

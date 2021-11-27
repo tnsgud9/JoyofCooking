@@ -38,6 +38,18 @@ public class Block : MonoBehaviour
         leftSprite.sprite = SuperManager.Instance.blockBundle.GetSprite(type.ToString(), "left");
         rightSprite.sprite = SuperManager.Instance.blockBundle.GetSprite(type.ToString(), "right");
     }
+
+    public void CutHandler()
+    {
+        _anim.SetTrigger(destroyAnim);
+        X = 0;
+        Y = 0;
+    }
+
+    public void AnimEndCallback()
+    {
+        this.gameObject.SetActive(false);
+    }
     
     
 

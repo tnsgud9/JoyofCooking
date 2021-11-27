@@ -33,7 +33,7 @@ public class CameraController : Singleton<CameraController>
             if (  hit.collider.gameObject.CompareTag("Block"))
             {
                 Debug.Log("is Block hit");
-                //PuzzleManager.Instance.SelectBlock(hit.collider.gameObject.GetComponent<Block>());
+                PuzzleManager.Instance.SelectBlock(hit.collider.gameObject);
             }
             
         }

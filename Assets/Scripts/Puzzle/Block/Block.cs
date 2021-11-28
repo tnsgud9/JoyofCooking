@@ -13,24 +13,27 @@ public enum BlockType
 
 public class Block : MonoBehaviour
 {
-    public int X, Y;
-    public bool isDestroy = false;
+    public Tile tile = null;
     public BlockType type = BlockType.none;
-    private Transform reachPos;
     private Animator _anim;
     private SpriteRenderer leftSprite;
     private SpriteRenderer rightSprite;
     private GameObject fullSprite;
-    private AudioSource _audioSource;
     private static readonly int destroyAnim = Animator.StringToHash("destroy");
     
-    public void Awake()
+    private void Awake()
     {
-        _audioSource = GetComponent<AudioSource>();
         leftSprite = transform.GetChild(0).GetComponent<SpriteRenderer>();
         rightSprite = transform.GetChild(1).GetComponent<SpriteRenderer>();
         fullSprite = transform.GetChild(2).GetComponent<GameObject>();
         _anim = GetComponent<Animator>();
+    }
+
+    public void Set(Tile tile, Transform trans, bool active)
+    {
+        this.tile = tile;
+        transform.position = trans.position;
+        this.gameObject.SetActive(active);
     }
     public void ChangeRandomType()
     {
@@ -39,20 +42,21 @@ public class Block : MonoBehaviour
         rightSprite.sprite = SuperManager.Instance.blockBundle.GetSprite(type.ToString(), "right");
     }
 
-    public void CutHandler()
+    public void Cut()
     {
         _anim.SetTrigger(destroyAnim);
-        X = 0;
-        Y = 0;
+        tile = null;
     }
 
     public void AnimEndCallback()
     {
         this.gameObject.SetActive(false);
     }
-    
-    
 
+    public void OnDisable()
+    {
+        tile = null;
+    }
 }    /*
 
 

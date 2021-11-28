@@ -5,10 +5,9 @@ using Singleton;
 using UnityEngine;
 
 
-public class GameManager : DestoryableSingleton<GameManager>
+public class GameManager : Singleton<GameManager>
 {
-    public TilesManager tilesManager;
-    public BlocksManager blocksController;
+    
     private void Awake()
     {
     }

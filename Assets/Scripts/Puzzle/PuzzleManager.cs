@@ -164,31 +164,32 @@ public class PuzzleManager : DestoryableSingleton<PuzzleManager>,Manager
     }
     public void BlockRelocation()
     {
-        for (int i = 0; i < Constants.TILESIZE; i++)
+        for (int i = Constants.TILESIZE-1; i >= 0 ; i--)
         {
             for (int j = 0; j < Constants.TILESIZE; j++)
             {
-                if(tileMap[i,j].block)
-                    blockStack[j].Push(tileMap[i,j].block.gameObject);
-                while (blockStack[i].Count < Constants.TILESIZE)
+                if (!tileMap[i, j].block)
                 {
-                    GameObject block = disableBlocks.Dequeue();
-                    blockStack[j].Push(block);
-                }
-            }
-        }
-        for (int i = 0; i < Constants.TILESIZE; i++)
-        {
-            for (int j = 0; j < Constants.TILESIZE; j++)
-            {
-                GameObject block = blockStack[i].Pop();
-                if (block)
-                {
+                    for (int k = i; k >= 0; k--)
+                    {
+                        if (tileMap[k, j].block)
+                        {
+                            tileMap[i, j].SetBlock(tileMap[k, j].block);
+                            tileMap[k, j].block = null;
+                            break;
+                        }
+                    }
                     
                 }
+
+                if (!tileMap[i, j].block)
+                {
+                    tileMap[i, j].SetBlock(disableBlocks.Dequeue());
+                    tileMap[i, j].block.ChangeRandomType();
+                    //TODO : 이전에 사용된 게임 오브젝트 풀링으로 사용시 좌표가 초기화 되지 않는 오류 FIX 필요
+                }
             }
         }
-        
     }
     #endregion
 
@@ -210,7 +211,7 @@ public class PuzzleManager : DestoryableSingleton<PuzzleManager>,Manager
             // Block 쪽에서 이동하는 함수를 구현.
         }
         //callback
-        //BlockRelocation();
+        BlockRelocation();
         
     }
     #endregion

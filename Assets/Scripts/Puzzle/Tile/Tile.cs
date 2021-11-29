@@ -4,7 +4,7 @@ public class Tile
 {
     
     public Block block = null;
-    private Transform transform;
+    public Transform transform;
     public int X, Y;
 
     public Tile(Transform tile, int y,int x)
@@ -31,5 +31,10 @@ public class Tile
     {
         this.block = block;
         block.Set(this,transform,true);
+    }
+
+    public void ChangeBlock(Block block)
+    {
+        
     }
 }

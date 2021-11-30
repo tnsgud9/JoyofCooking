@@ -28,7 +28,6 @@ public class Block : MonoBehaviour
         fullSprite = transform.GetChild(2).GetComponent<GameObject>();
         _anim = GetComponent<Animator>();
     }
-
     public void Set(Tile tile, Transform trans, bool active)
     {
         this.tile = tile;

@@ -110,7 +110,7 @@ public class PuzzleManager : DestoryableSingleton<PuzzleManager>,Manager
             for (int j = 0; j < Constants.TILESIZE; j++)
             {
                 tileMap[i, j].SetBlock(disableBlocks.Dequeue());
-                tileMap[i, j].block.ChangeRandomType();
+                tileMap[i, j].ChangeRandomBlock();
             }
         }
     }
@@ -175,7 +175,7 @@ public class PuzzleManager : DestoryableSingleton<PuzzleManager>,Manager
                         if (tileMap[k, j].block)
                         {
                             tileMap[i, j].SetBlock(tileMap[k, j].block);
-                            tileMap[k, j].block = null;
+                            tileMap[k, j].ClearBlock();
                             break;
                         }
                     }
@@ -185,7 +185,7 @@ public class PuzzleManager : DestoryableSingleton<PuzzleManager>,Manager
                 if (!tileMap[i, j].block)
                 {
                     tileMap[i, j].SetBlock(disableBlocks.Dequeue());
-                    tileMap[i, j].block.ChangeRandomType();
+                    tileMap[i, j].ChangeRandomBlock();
                     //TODO : 이전에 사용된 게임 오브젝트 풀링으로 사용시 좌표가 초기화 되지 않는 오류 FIX 필요
                 }
             }
@@ -203,9 +203,10 @@ public class PuzzleManager : DestoryableSingleton<PuzzleManager>,Manager
             audio.Play();
             foreach (Tile tile in matchTiles)
             {
+                
                 tile.block.Cut();
                 disableBlocks.Enqueue(tile.block.gameObject);
-                tile.block = null;
+                tile.ClearBlock();
             }
             //재배치 관련 함수
             // Block 쪽에서 이동하는 함수를 구현.

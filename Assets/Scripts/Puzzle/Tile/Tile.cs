@@ -33,8 +33,13 @@ public class Tile
         block.Set(this,transform,true);
     }
 
-    public void ChangeBlock(Block block)
+    public void ChangeRandomBlock()
     {
-        
+        if(block) block.ChangeRandomType();
+    }
+
+    public void ClearBlock()
+    {
+        block = null;
     }
 }

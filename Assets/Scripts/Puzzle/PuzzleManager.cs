@@ -20,13 +20,6 @@ public class PuzzleManager : DestoryableSingleton<PuzzleManager>,Manager
     public Queue<GameObject> disableBlocks;
 
     #region Unity Functions
-
-    
-    private void Update()
-    {
-        Debug.Log(disableBlocks.Count);
-    }
-
     private void Awake()
     {
         Initialize();
@@ -174,7 +167,7 @@ public class PuzzleManager : DestoryableSingleton<PuzzleManager>,Manager
                     {
                         if (tileMap[k, j].block)
                         {
-                            tileMap[i, j].SetBlock(tileMap[k, j].block);
+                            tileMap[i, j].MoveBlock(tileMap[k, j].block);
                             tileMap[k, j].ClearBlock();
                             break;
                         }
@@ -186,15 +179,35 @@ public class PuzzleManager : DestoryableSingleton<PuzzleManager>,Manager
                 {
                     tileMap[i, j].SetBlock(disableBlocks.Dequeue());
                     tileMap[i, j].ChangeRandomBlock();
-                    //TODO : 이전에 사용된 게임 오브젝트 풀링으로 사용시 좌표가 초기화 되지 않는 오류 FIX 필요
                 }
             }
         }
     }
+
+    public int BlockRelationCheck()
+    {
+        int maxRelation = Int32.MinValue;
+        for (int i = 0; i < Constants.TILESIZE; i++)
+        {
+            for (int j = 0; j < Constants.TILESIZE; j++)
+            {
+                int relation = 1;
+                if (j - 1 >= 0 && tileMap[i, j].block.type == tileMap[i, j - 1].block.type)
+                    relation++;
+                if (j + 1 < Constants.TILESIZE && tileMap[i, j].block.type == tileMap[i, j + 1].block.type)
+                    relation++;
+                if (i - 1 >= 0 && tileMap[i, j].block.type == tileMap[i - 1, j].block.type)
+                    relation++;
+                if (i + 1 < Constants.TILESIZE && tileMap[i, j].block.type == tileMap[i + 1, j].block.type)
+                    relation++;
+                maxRelation = maxRelation > relation ? maxRelation : relation;
+            }
+        }
+        return maxRelation;
+    }
     #endregion
 
     #region Camera Events
-
     public void SelectBlock(GameObject target)
     {
         List<Tile> matchTiles = PuzzleMatchingBFS(target.GetComponent<Block>());
@@ -213,7 +226,13 @@ public class PuzzleManager : DestoryableSingleton<PuzzleManager>,Manager
         }
         //callback
         BlockRelocation();
-        
+        if (BlockRelationCheck() <= 2)
+        {
+            Debug.Log("Puzzle Shake!!!");
+            // Time Pause;
+            //Shake Event;
+        }
+
     }
     #endregion
     

@@ -16,6 +16,7 @@ public class Block : MonoBehaviour
     public Tile tile = null;
     public BlockType type = BlockType.none;
     private Animator _anim;
+    private Collider2D collider;
     private SpriteRenderer leftSprite;
     private SpriteRenderer rightSprite;
     private GameObject fullSprite;
@@ -26,14 +27,32 @@ public class Block : MonoBehaviour
         leftSprite = transform.GetChild(0).GetComponent<SpriteRenderer>();
         rightSprite = transform.GetChild(1).GetComponent<SpriteRenderer>();
         fullSprite = transform.GetChild(2).GetComponent<GameObject>();
+        collider = GetComponent<Collider2D>();
         _anim = GetComponent<Animator>();
     }
+
+    public void Set(Tile tile, Transform trans)
+    {
+        this.tile = tile;
+        transform.position = trans.position;
+        this.gameObject.SetActive(true);
+    }
+
     public void Set(Tile tile, Transform trans, bool active)
     {
         this.tile = tile;
         transform.position = trans.position;
         this.gameObject.SetActive(active);
     }
+
+    public void Move(Tile tile, Transform trans)
+    {
+        this.tile = tile;
+        collider.enabled = false;
+        StartCoroutine(Collection.MoveToPosition(this.transform, trans.position, 0.15f,
+            () => { collider.enabled = false;}));
+    }
+
     public void ChangeRandomType()
     {
         type = (BlockType)Random.Range(1, 5); // TODO: Fixed 5 value

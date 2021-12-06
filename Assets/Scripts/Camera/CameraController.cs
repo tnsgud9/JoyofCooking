@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Singleton;
@@ -7,9 +8,12 @@ public class CameraController : Singleton<CameraController>
 {
     private Camera _camera;
     public bool touchAvailable = true;
-    void Start()
+
+    private void Awake()
     {
+        SuperManager.Instance.cameraController = this;
         _camera = GetComponent<Camera>();
+
     }
 
     void Update()
@@ -24,10 +28,12 @@ public class CameraController : Singleton<CameraController>
         {
             RaycastHit2D hit =
                 Physics2D.Raycast(_camera.ScreenToWorldPoint(Input.mousePosition), transform.forward, 100f);
+            
+            // Input Events
             if (  hit.collider.gameObject.CompareTag("Block"))
             {
                 Debug.Log("is Block hit");
-                hit.collider.gameObject.GetComponent<Block>().SelectBlock();
+                PuzzleManager.Instance.SelectBlock(hit.collider.gameObject);
             }
             
         }

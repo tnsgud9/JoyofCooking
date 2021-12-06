@@ -6,5 +6,5 @@ using UnityEngine;
 /// </summary>
 public interface Manager
 {
-    
+    void Initialize();
 }

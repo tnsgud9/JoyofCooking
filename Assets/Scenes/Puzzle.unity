@@ -3123,6 +3123,7 @@ GameObject:
   - component: {fileID: 636050517}
   - component: {fileID: 636050519}
   - component: {fileID: 636050518}
+  - component: {fileID: 636050520}
   m_Layer: 5
   m_Name: Handle
   m_TagString: Untagged
@@ -3187,6 +3188,25 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 636050516}
   m_CullTransparentMesh: 1
+--- !u!95 &636050520
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 636050516}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 0dd18f3fa6678f24a9919bb1cd5a12d2, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1 &649958297
 GameObject:
   m_ObjectHideFlags: 0
@@ -4194,8 +4214,9 @@ GameObject:
   m_Component:
   - component: {fileID: 865885435}
   - component: {fileID: 865885436}
+  - component: {fileID: 865885437}
   m_Layer: 5
-  m_Name: Slider
+  m_Name: Timer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4243,7 +4264,7 @@ MonoBehaviour:
     m_SelectOnDown: {fileID: 0}
     m_SelectOnLeft: {fileID: 0}
     m_SelectOnRight: {fileID: 0}
-  m_Transition: 1
+  m_Transition: 0
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
     m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
@@ -4263,7 +4284,7 @@ MonoBehaviour:
     m_PressedTrigger: Pressed
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
-  m_Interactable: 1
+  m_Interactable: 0
   m_TargetGraphic: {fileID: 636050518}
   m_FillRect: {fileID: 1293092210}
   m_HandleRect: {fileID: 636050517}
@@ -4271,10 +4292,22 @@ MonoBehaviour:
   m_MinValue: 0
   m_MaxValue: 1
   m_WholeNumbers: 0
-  m_Value: 0.58
+  m_Value: 0
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &865885437
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 865885434}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a0c13eb76a380db499bbea99ca1f5249, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &885810665
 GameObject:
   m_ObjectHideFlags: 0

@@ -3,5 +3,5 @@
     public const int TILESIZE = 7;
     public const int MATCHCOUNT = 3;
     public const int CREATEBLOCKCOUNT = 100;
-    public const float LIMITTIME = 60f;
+    public const float TIMELIMIT = 60f;
 }

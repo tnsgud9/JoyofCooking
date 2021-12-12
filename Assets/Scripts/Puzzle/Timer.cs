@@ -7,19 +7,31 @@ using UnityEngine.UI;
 public class Timer : MonoBehaviour
 {
     public bool isRunning = false;
-    private float time = 0;
+    private float time = Constants.TIMELIMIT;
     private Slider slider;
-
+    public Image catHeadImage;
+    public Sprite catNormal;
+    public Sprite catHurry;
+    public Sprite catNoTime;
+    public Sprite catGameOver;
     public Text timeText;
+    
 
     private void Awake()
     {
         slider = GetComponent<Slider>();
+        catHeadImage = GetComponent<Image>();
+        
+        //좋은 방법인가? Need to code review
+        PuzzleManager.Instance.timer = this;
+        slider.maxValue = Constants.TIMELIMIT;
     }
 
-    public void Start()
+    public void OnEnable()
     {
-        slider.value = 0;
+        time = Constants.TIMELIMIT;
+        slider.value = slider.maxValue;
+
     }
 
     void Update()
@@ -27,15 +39,16 @@ public class Timer : MonoBehaviour
         if (isRunning)
         {
             //TODO: need to update Timer code
-            time += Time.deltaTime;
-            time = Mathf.Clamp(time, 0f, Constants.TIMELIMIT);
-            timeText.text = (Constants.TIMELIMIT - System.Math.Truncate(time)).ToString();
-            slider.value = Math.ValueToPercent(time, Constants.TIMELIMIT);
-            if (time < Constants.TIMELIMIT)
+            time -= Time.deltaTime;
+            if (time < 0)
             {
                 TimePause();
-                //TODO : make it puzzleManager callback func
+                PuzzleManager.Instance.GameOver();
+                
             }
+            slider.value = time;
+            timeText.text = System.Math.Truncate(time).ToString();
+            
         }
     }
 
@@ -54,5 +67,5 @@ public class Timer : MonoBehaviour
         TimeReset();
     }
 
-    public void TimeAdd(float addTime) => time += addTime;
+    public void TimeAdd(float addTime) => time = (time + addTime) > Constants.TIMELIMIT ? Constants.TIMELIMIT: time + addTime;
 }

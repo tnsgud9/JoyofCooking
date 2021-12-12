@@ -7,10 +7,12 @@ using UnityEngine;
 public class PuzzleManager : DestoryableSingleton<PuzzleManager>,Manager
 {
     private GameManager gameManager;
-    private AudioSource audio;
+    [Header("GameManage Components")]
+    private AudioSource popAudio;
+    public AudioSource backgroundAudio;
+    public Timer timer;
+    
     [Header("TileMap Components")]
-    public GameObject tempTileSet;
-    private Tile[,] tempTileMap;
     public GameObject tileSet;
     private Tile[,] tileMap;
     [Header("Block Components")]
@@ -29,9 +31,13 @@ public class PuzzleManager : DestoryableSingleton<PuzzleManager>,Manager
     {
         
         SetupTileMap();
-        SetupTempTileMap();
         CreateBlocks();
-        DeployBlocks();
+        //DeployBlocks();
+    }
+
+    private void Start()
+    {
+        PlayStart();
     }
 
     private void OnDisable()
@@ -42,11 +48,9 @@ public class PuzzleManager : DestoryableSingleton<PuzzleManager>,Manager
 
     public void Initialize()
     {
-        audio = GetComponent<AudioSource>();
+        popAudio = GetComponent<AudioSource>();
         gameManager = GameManager.Instance;
         tileMap = new Tile[Constants.TILESIZE, Constants.TILESIZE];
-        tempTileMap = new Tile[Constants.TILESIZE, Constants.TILESIZE];
-        tempTileSet = GameObject.Find("@TileSets Temp");
         tileSet = GameObject.Find("@TileSets");
         disableBlocks = new Queue<GameObject>();
         blockStack = new Stack<GameObject>[Constants.TILESIZE];
@@ -56,7 +60,35 @@ public class PuzzleManager : DestoryableSingleton<PuzzleManager>,Manager
     }
     
     #endregion
+
+    #region GameManager Functions
+    public void PlayStart()
+    {
+        DeployBlocks();
+        timer.TimeStart();
+        backgroundAudio.Play();
+    }
+
+    public void PlayPause()
+    {
+        Time.timeScale = 0f;
+        //timer.TimePause();
+        //backgroundAudio.Pause();
+    }
+
+    public void PlayResume()
+    {
+        Time.timeScale = 1f;
+        //backgroundAudio.Play();
+    }
+
+    public void GameOver()
+    {
+        Debug.Log("======== Game Over ========");
+        CameraController.Instance.enabled = false;
+    }
     
+    #endregion
     #region TilesComponents
     public void SetupTileMap()
     {
@@ -70,19 +102,7 @@ public class PuzzleManager : DestoryableSingleton<PuzzleManager>,Manager
         }
     }
     
-    private void SetupTempTileMap()
-    {
-        for (int i = 0; i < Constants.TILESIZE; i++)
-        {
-            for (int j = 0; j < Constants.TILESIZE; j++)
-            {
-                Transform tempTile = tempTileSet.transform.GetChild(i).GetChild(j);
-                tempTileMap[i, j] = new Tile(tempTile, i, j);
-            }
-        }
-    }
     #endregion
-    
     #region BlockComponents
 
     public void CreateBlocks()
@@ -213,7 +233,7 @@ public class PuzzleManager : DestoryableSingleton<PuzzleManager>,Manager
         List<Tile> matchTiles = PuzzleMatchingBFS(target.GetComponent<Block>());
         if (matchTiles.Count >= Constants.MATCHCOUNT)
         {
-            audio.Play();
+            popAudio.Play();
             foreach (Tile tile in matchTiles)
             {
                 

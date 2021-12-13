@@ -40,4 +40,8 @@ public class Collection {
 
         callback();
     }
+    public static void GenericSwap<T>(ref T a,ref T b)
+    {
+        (a, b) = (b, a);
+    }
 }

@@ -34,17 +34,13 @@ public class Tile
         block.Set(this, transform, true);
     }
 
-    /**
-     * Move to Block with animation ( coroutine )
-     */
     public void MoveBlock(Block block) // Parameter block variable is will be empty block ( move target )
     {
         this.block = block;
         block.Move(this, transform);
     }
 
-
-public void ChangeRandomBlock()
+    public void ChangeRandomBlock()
     {
         if(block) block.ChangeRandomType();
     }

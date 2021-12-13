@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using Singleton;
 using UnityEngine;
+using UnityEngine.UI;
+using Random = UnityEngine.Random;
 
 public class PuzzleManager : DestoryableSingleton<PuzzleManager>,Manager
 {
@@ -10,7 +12,11 @@ public class PuzzleManager : DestoryableSingleton<PuzzleManager>,Manager
     [Header("GameManage Components")]
     private AudioSource popAudio;
     public AudioSource backgroundAudio;
-    public Timer timer;
+    public AudioClip normalAudio;
+    public AudioClip hurryAudio;
+    public AudioClip PlayOverAudio;
+    public PuzzleTimer timer;
+    public GameObject ShuffleObj;
     
     [Header("TileMap Components")]
     public GameObject tileSet;
@@ -48,6 +54,8 @@ public class PuzzleManager : DestoryableSingleton<PuzzleManager>,Manager
 
     public void Initialize()
     {
+        ShuffleObj.SetActive(false);
+        backgroundAudio.clip = normalAudio;
         popAudio = GetComponent<AudioSource>();
         gameManager = GameManager.Instance;
         tileMap = new Tile[Constants.TILESIZE, Constants.TILESIZE];
@@ -58,9 +66,8 @@ public class PuzzleManager : DestoryableSingleton<PuzzleManager>,Manager
             blockStack[i] = new Stack<GameObject>();
         Debug.Log("Done: TileMap Init");
     }
-    
-    #endregion
 
+    #endregion
     #region GameManager Functions
     public void PlayStart()
     {
@@ -68,23 +75,40 @@ public class PuzzleManager : DestoryableSingleton<PuzzleManager>,Manager
         timer.TimeStart();
         backgroundAudio.Play();
     }
+    
 
     public void PlayPause()
     {
+        CameraController.Instance.touchAvailable = false;
         Time.timeScale = 0f;
+        backgroundAudio.Pause();
+        
+
         //timer.TimePause();
-        //backgroundAudio.Pause();
     }
 
     public void PlayResume()
     {
+        CameraController.Instance.touchAvailable = true;
         Time.timeScale = 1f;
-        //backgroundAudio.Play();
+        backgroundAudio.Play();
     }
 
+    public void HurryTime()
+    {
+        backgroundAudio.clip = hurryAudio;
+        backgroundAudio.Play();
+        //Score Value Change;
+
+    }
+
+    
     public void GameOver()
     {
         Debug.Log("======== Game Over ========");
+        backgroundAudio.clip = PlayOverAudio;
+        backgroundAudio.Play();
+        backgroundAudio.loop = false;
         CameraController.Instance.enabled = false;
     }
     
@@ -225,8 +249,23 @@ public class PuzzleManager : DestoryableSingleton<PuzzleManager>,Manager
         }
         return maxRelation;
     }
-    #endregion
 
+    public IEnumerator BlockShuffle()
+    {
+        ShuffleObj.SetActive(true);
+        timer.TimePause();
+        CameraController.Instance.touchAvailable = false;
+        //Animation Event;
+        yield return new WaitForSeconds(ShuffleObj.GetComponent<Animator>().GetCurrentAnimatorClipInfo(0)[0].clip.length);
+        ShuffleObj.SetActive(false);
+        for (int i = 0; i < 5; i++)
+        {
+            tileMap[Random.Range(0, Constants.TILESIZE), Random.Range(0, Constants.TILESIZE)].block.ChangeRandomType();
+        }
+        CameraController.Instance.touchAvailable = true; //TODO: Need to Camera Control func refactoring
+        timer.TimeStart();
+    }
+    #endregion
     #region Camera Events
     public void SelectBlock(GameObject target)
     {
@@ -249,6 +288,7 @@ public class PuzzleManager : DestoryableSingleton<PuzzleManager>,Manager
         if (BlockRelationCheck() <= 2)
         {
             Debug.Log("Puzzle Shake!!!");
+            StartCoroutine(BlockShuffle());
             // Time Pause;
             //Shake Event;
         }

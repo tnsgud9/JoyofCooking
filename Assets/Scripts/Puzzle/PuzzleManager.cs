@@ -258,10 +258,14 @@ public class PuzzleManager : DestoryableSingleton<PuzzleManager>,Manager
         //Animation Event;
         yield return new WaitForSeconds(ShuffleObj.GetComponent<Animator>().GetCurrentAnimatorClipInfo(0)[0].clip.length);
         ShuffleObj.SetActive(false);
-        for (int i = 0; i < 5; i++)
+        do 
         {
-            tileMap[Random.Range(0, Constants.TILESIZE), Random.Range(0, Constants.TILESIZE)].block.ChangeRandomType();
-        }
+            for (int i = 0; i < 5; i++)
+            {
+                tileMap[Random.Range(0, Constants.TILESIZE), Random.Range(0, Constants.TILESIZE)].block.ChangeRandomType();
+                tileMap[Random.Range(0, Constants.TILESIZE), Random.Range(0, Constants.TILESIZE)].block.PlayParticle();
+            }
+        } while (BlockRelationCheck() < Constants.MATCHCOUNT);
         CameraController.Instance.touchAvailable = true; //TODO: Need to Camera Control func refactoring
         timer.TimeStart();
     }
@@ -289,8 +293,6 @@ public class PuzzleManager : DestoryableSingleton<PuzzleManager>,Manager
         {
             Debug.Log("Puzzle Shake!!!");
             StartCoroutine(BlockShuffle());
-            // Time Pause;
-            //Shake Event;
         }
 
     }

@@ -19,6 +19,7 @@ public class Block : MonoBehaviour
     private Collider2D collider;
     private SpriteRenderer leftSprite;
     private SpriteRenderer rightSprite;
+    private ParticleSystem particle;
     private GameObject fullSprite;
     private static readonly int destroyAnim = Animator.StringToHash("destroy");
     
@@ -27,6 +28,7 @@ public class Block : MonoBehaviour
         leftSprite = transform.GetChild(0).GetComponent<SpriteRenderer>();
         rightSprite = transform.GetChild(1).GetComponent<SpriteRenderer>();
         fullSprite = transform.GetChild(2).GetComponent<GameObject>();
+        particle = transform.GetChild(3).GetComponent<ParticleSystem>();
         collider = GetComponent<Collider2D>();
         _anim = GetComponent<Animator>();
     }
@@ -60,9 +62,15 @@ public class Block : MonoBehaviour
         rightSprite.sprite = SuperManager.Instance.blockBundle.GetSprite(type.ToString(), "right");
     }
 
-    public void Cut()
+    public void PlayParticle()
+    {
+        particle.Play();
+    }
+
+    public void Cut() 
     {
         _anim.SetTrigger(destroyAnim);
+        
         tile = null;
     }
 

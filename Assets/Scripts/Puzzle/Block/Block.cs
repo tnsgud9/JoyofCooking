@@ -54,6 +54,12 @@ public class Block : MonoBehaviour
         StartCoroutine(Collection.MoveToPosition(this.transform, trans.position, 0.15f,
             () => { collider.enabled = false;}));
     }
+    public void Move(Transform trans)
+    {
+        collider.enabled = false;
+        StartCoroutine(Collection.MoveToPosition(this.transform, trans.position, 0.15f,
+            () => { collider.enabled = false;}));
+    }
 
     public void ChangeRandomType()
     {
@@ -70,7 +76,6 @@ public class Block : MonoBehaviour
     public void Cut() 
     {
         _anim.SetTrigger(destroyAnim);
-        
         tile = null;
     }
 

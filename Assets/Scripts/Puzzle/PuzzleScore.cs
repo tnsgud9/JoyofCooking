@@ -1,18 +1,18 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
+using UnityEngine.SocialPlatforms.Impl;
+using UnityEngine.UI;
 
 public class PuzzleScore : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    public int score  = 0;
 
-    // Update is called once per frame
-    void Update()
+    public void Add(int score)
     {
-        
+        this.score += score;
     }
+    public void AddMatchCount(int count) => this.score += Constants.BASICSCORE * count;
 }

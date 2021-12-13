@@ -4,19 +4,41 @@ using System.Collections.Generic;
 using Singleton;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Video;
 using Random = UnityEngine.Random;
 
 public class PuzzleManager : DestoryableSingleton<PuzzleManager>,Manager
 {
+    
+    //TOOD : Need to REFACTORING
     private GameManager gameManager;
     [Header("GameManage Components")]
     private AudioSource popAudio;
+    public AudioClip popCorrectAudio;
+    public AudioClip popNormalAudio;
     public AudioSource backgroundAudio;
     public AudioClip normalAudio;
     public AudioClip hurryAudio;
     public AudioClip PlayOverAudio;
     public PuzzleTimer timer;
+    public PuzzleScore puzzleScore;
+    public VideoPlayer charMotion;
+    public VideoClip charNormal;
+    public VideoClip charHurry;
+    public Text scoreText;
+    // Intro
+    public GameObject introReady;
+    // GameOverPopUp
+    public GameObject gameOverPopup;
+    // Shuffle
     public GameObject ShuffleObj;
+    //Bonus section
+    public Text bonusCountText;
+    public Block BonusBlock;
+    public int BonusRemainCount=0;
+    private int BonusCount;
+    public AudioSource bonusAudio;
+    
     
     [Header("TileMap Components")]
     public GameObject tileSet;
@@ -43,47 +65,60 @@ public class PuzzleManager : DestoryableSingleton<PuzzleManager>,Manager
 
     private void Start()
     {
-        PlayStart();
+        StartCoroutine(PlayStart());
     }
 
     private void OnDisable()
     {
         DestroyBlocks();
-        
+        BonusBlock.ChangeRandomType();
     }
 
     public void Initialize()
     {
+        gameOverPopup.SetActive(false);
+        charMotion.clip = charNormal;
+        scoreText.text = $"Score : {puzzleScore.score}";
+        BonusCount = Constants.STARTMATCHCOUNT;
         ShuffleObj.SetActive(false);
         backgroundAudio.clip = normalAudio;
         popAudio = GetComponent<AudioSource>();
         gameManager = GameManager.Instance;
         tileMap = new Tile[Constants.TILESIZE, Constants.TILESIZE];
         tileSet = GameObject.Find("@TileSets");
+        BonusBlock = GameObject.Find("@BonusBlock").GetComponent<Block>();
         disableBlocks = new Queue<GameObject>();
         blockStack = new Stack<GameObject>[Constants.TILESIZE];
         for (int i = 0; i < Constants.TILESIZE; i++)
             blockStack[i] = new Stack<GameObject>();
         Debug.Log("Done: TileMap Init");
     }
-
     #endregion
     #region GameManager Functions
-    public void PlayStart()
+    public IEnumerator PlayStart()
     {
+        gameOverPopup.SetActive(false);
+        puzzleScore.score = 0;
+        introReady.SetActive(true);
+        charMotion.gameObject.GetComponent<SpriteRenderer>().color = Color.white;
+        yield return new WaitForSeconds(introReady.GetComponent<AudioSource>().clip.length);
+        introReady.SetActive(false);
         DeployBlocks();
         timer.TimeStart();
         backgroundAudio.Play();
+        SetBonus();
     }
-    
+
+    public void PlayRestart()
+    {
+        StartCoroutine(PlayStart());
+    }
 
     public void PlayPause()
     {
         CameraController.Instance.touchAvailable = false;
         Time.timeScale = 0f;
         backgroundAudio.Pause();
-        
-
         //timer.TimePause();
     }
 
@@ -96,11 +131,22 @@ public class PuzzleManager : DestoryableSingleton<PuzzleManager>,Manager
 
     public void HurryTime()
     {
+        //TODO: refactoring
+        charMotion.clip = charHurry;
         backgroundAudio.clip = hurryAudio;
         backgroundAudio.Play();
-        //Score Value Change;
-
     }
+
+    public void SetBonus()
+    {
+        BonusBlock.ChangeRandomType();
+        BonusCount = Constants.STARTMATCHCOUNT;
+        BonusRemainCount = BonusCount;
+        //BonusRemainCount = BonusCount.Dequeue();
+        bonusCountText.text = BonusRemainCount.ToString();
+    }
+    
+    
 
     
     public void GameOver()
@@ -109,7 +155,11 @@ public class PuzzleManager : DestoryableSingleton<PuzzleManager>,Manager
         backgroundAudio.clip = PlayOverAudio;
         backgroundAudio.Play();
         backgroundAudio.loop = false;
+        charMotion.Stop();
+        charMotion.gameObject.GetComponent<SpriteRenderer>().color = Constants.BACKGROUNDCOLOR;
         CameraController.Instance.enabled = false;
+        gameOverPopup.SetActive(true);
+        
     }
     
     #endregion
@@ -260,7 +310,7 @@ public class PuzzleManager : DestoryableSingleton<PuzzleManager>,Manager
         ShuffleObj.SetActive(false);
         do 
         {
-            for (int i = 0; i < 5; i++)
+            for (int i = 0; i < Constants.SHUFFLECOUNT; i++)
             {
                 tileMap[Random.Range(0, Constants.TILESIZE), Random.Range(0, Constants.TILESIZE)].block.ChangeRandomType();
                 tileMap[Random.Range(0, Constants.TILESIZE), Random.Range(0, Constants.TILESIZE)].block.PlayParticle();
@@ -273,19 +323,42 @@ public class PuzzleManager : DestoryableSingleton<PuzzleManager>,Manager
     #region Camera Events
     public void SelectBlock(GameObject target)
     {
+        popAudio.clip = popNormalAudio;
         List<Tile> matchTiles = PuzzleMatchingBFS(target.GetComponent<Block>());
         if (matchTiles.Count >= Constants.MATCHCOUNT)
         {
-            popAudio.Play();
+            //add score
+            puzzleScore.AddMatchCount(matchTiles.Count);
+            scoreText.text = $"Score : {puzzleScore.score}";
+            
             foreach (Tile tile in matchTiles)
             {
-                
                 tile.block.Cut();
                 disableBlocks.Enqueue(tile.block.gameObject);
                 tile.ClearBlock();
             }
-            //재배치 관련 함수
-            // Block 쪽에서 이동하는 함수를 구현.
+            if (target.GetComponent<Block>().type == BonusBlock.type)
+            {
+                popAudio.clip = popCorrectAudio;
+                //TODO: Need to move SCORE FUNC Refactoring 
+                BonusRemainCount -= matchTiles.Count;
+                bonusCountText.text = BonusRemainCount.ToString();
+                
+                //Bouns Count Check
+                if (BonusRemainCount <= 0)
+                {
+                    // 안좋은 코드 인듯??
+                    BonusCount += Constants.INCREASEMATCHCOUNT;
+                    BonusRemainCount = BonusCount;
+                    bonusCountText.text = BonusRemainCount.ToString();
+                    BonusBlock.ChangeRandomType();
+                    BonusBlock.PlayParticle();
+                    bonusAudio.Play();
+                    timer.TimeAdd(Constants.BONUSINCREASETIME);
+                    
+                }
+            }
+            popAudio.Play();
         }
         //callback
         BlockRelocation();
@@ -297,5 +370,4 @@ public class PuzzleManager : DestoryableSingleton<PuzzleManager>,Manager
 
     }
     #endregion
-    
 }

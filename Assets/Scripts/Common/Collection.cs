@@ -37,7 +37,6 @@ public class Collection {
             transform.position = Vector3.Lerp(currentPos, position, t);
             yield return null;
         }
-
         callback();
     }
     public static void GenericSwap<T>(ref T a,ref T b)
